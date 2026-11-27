@@ -520,9 +520,151 @@ html[data-sky="day"] #intro .ires .snk{color:#2c4068}
 .srcs li{margin:0 0 6px;break-inside:avoid;color:var(--muted)}
 .srcs li a{color:var(--amber);margin-right:4px}
 </style>
+<style id="liquid-glass">
+/* ===== 리퀴드 글래스: 짙은 남색 밤하늘 + 반투명 유리 카드 (참고 이미지의 분위기) =====
+   이 블록만 지우면 이전 디자인으로 돌아간다. 색은 아래 변수만 바꿔도 달라진다. */
+html[data-sky="night"]:root:not(.x){--display:'Noto Sans KR',sans-serif;--amber:#9fd8ff;--amber-ink:#06142e;--bd:rgba(255,255,255,.26);--line:rgba(255,255,255,.17);--muted:#aab6d6;
+  --g-bg:linear-gradient(125deg,rgba(255,255,255,.2) 0%,rgba(255,255,255,.07) 40%,rgba(255,255,255,.04) 100%);--g-line:rgba(255,255,255,.26);
+  --g-shadow:0 18px 44px rgba(2,6,23,.45),inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(255,255,255,.07);
+  --meter:linear-gradient(90deg,#4f9cff,#d4ecff);--blob1:#2b6dff;--blob2:#7a5cff;--blob3:#19c3ff;--blobO:.42}
+html[data-sky="day"]:root:not(.x){--display:'Noto Sans KR',sans-serif;--amber:#1f6fd6;--amber-ink:#ffffff;--bd:rgba(29,42,68,.2);
+  --g-bg:linear-gradient(125deg,rgba(255,255,255,.78) 0%,rgba(255,255,255,.4) 40%,rgba(255,255,255,.28) 100%);--g-line:rgba(255,255,255,.9);
+  --g-shadow:0 16px 40px rgba(40,90,150,.2),inset 0 1px 0 rgba(255,255,255,.95),inset 0 -1px 0 rgba(255,255,255,.35);
+  --meter:linear-gradient(90deg,#1f6fd6,#7db8ff);--blob1:#ffd36b;--blob2:#7fc2ff;--blob3:#ffffff;--blobO:.5}
+html[data-sky]{--g-blur:blur(16px) saturate(165%)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+  html[data-sky="night"]:root:not(.x){--g-bg:linear-gradient(145deg,rgba(38,58,108,.92),rgba(18,32,76,.92))}
+  html[data-sky="day"]:root:not(.x){--g-bg:rgba(255,255,255,.9)}
+}
+
+/* 천천히 흐르는 액체 빛덩이 */
+.liquid{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.liquid i{position:absolute;border-radius:50%;filter:blur(70px);opacity:var(--blobO,.4);will-change:transform}
+.liquid i:nth-child(1){width:46vmax;height:46vmax;left:-12vmax;top:8vh;background:radial-gradient(circle at 40% 40%,var(--blob1),transparent 65%)}
+.liquid i:nth-child(2){width:40vmax;height:40vmax;right:-10vmax;top:40vh;background:radial-gradient(circle,var(--blob2),transparent 65%)}
+.liquid i:nth-child(3){width:34vmax;height:34vmax;left:30vw;bottom:-14vmax;background:radial-gradient(circle,var(--blob3),transparent 65%)}
+@media(prefers-reduced-motion:no-preference){
+  .liquid i:nth-child(1){animation:lq1 26s ease-in-out infinite alternate}
+  .liquid i:nth-child(2){animation:lq2 32s ease-in-out infinite alternate}
+  .liquid i:nth-child(3){animation:lq3 29s ease-in-out infinite alternate}
+  @keyframes lq1{to{transform:translate(12vw,10vh) scale(1.15)}}
+  @keyframes lq2{to{transform:translate(-10vw,-12vh) scale(1.1)}}
+  @keyframes lq3{to{transform:translate(8vw,-8vh) scale(1.2)}}
+}
+
+/* 유리 면: 카드, 패널, 접는 칸 */
+html[data-sky] :is(.card,.kind,.rec,.vid,.ccard,.rd,.todc,.qbox,.strip li,.steplist li,details){
+  background:var(--g-bg);border:1px solid var(--g-line);box-shadow:var(--g-shadow);border-radius:22px;
+  -webkit-backdrop-filter:var(--g-blur);backdrop-filter:var(--g-blur)}
+html[data-sky] details{border-radius:16px}
+html[data-sky] .card,html[data-sky] .ccard{-webkit-backdrop-filter:blur(10px) saturate(150%);backdrop-filter:blur(10px) saturate(150%);transition:transform .25s,box-shadow .25s}
+html[data-sky] .card:hover,html[data-sky] .ccard:hover{transform:translateY(-4px)}
+html[data-sky] .card .pic{background:radial-gradient(circle at 50% 30%,rgba(255,255,255,.28),rgba(255,255,255,0) 70%);border-bottom:1px solid var(--g-line)}
+html[data-sky] .m .t i{background:var(--meter)}
+
+/* 헤더, 알림 줄, 흐르는 글자 띠 */
+html[data-sky] header.top{background:var(--g-bg);border:0;border-bottom:1px solid var(--g-line);box-shadow:0 8px 30px rgba(2,6,23,.22);-webkit-backdrop-filter:var(--g-blur);backdrop-filter:var(--g-blur)}
+html[data-sky] .logo{text-shadow:0 0 18px rgba(159,216,255,.45)}
+html[data-sky="day"] .logo{text-shadow:none}
+html[data-sky] .notice{background:rgba(2,6,23,.5);color:var(--muted);border:0;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+html[data-sky="day"] .notice{background:rgba(255,255,255,.5);color:var(--fg)}
+html[data-sky] .marq{background:rgba(255,255,255,.06);color:var(--amber);border-block:1px solid var(--g-line);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+html[data-sky] .marq span:nth-child(even){color:var(--fg)}
+html[data-sky="day"] .marq{background:rgba(255,255,255,.45)}
+
+/* 첫 화면: 가운데 정렬 + 유리 달 */
+html[data-sky] .hero{text-align:center;padding-block:clamp(72px,12vw,140px) clamp(48px,7vw,88px)}
+html[data-sky]:root:not(.x) .hero{background-image:none!important}
+html[data-sky] .hero .wrap{grid-template-columns:1fr;justify-items:center}
+html[data-sky] .hero h1{font-size:clamp(2.4rem,7vw,4.6rem);letter-spacing:.02em;line-height:1.15;font-weight:700}
+html[data-sky] .hero p{margin-inline:auto}
+html[data-sky="night"] .hero p{color:#d6e2fb}
+html[data-sky] .cta-row{justify-content:center}
+html[data-sky="night"] .hero h1 .hl{background:linear-gradient(transparent 64%,rgba(159,216,255,.3) 64%);color:var(--amber)}
+html[data-sky] .hero::after{display:none}
+html[data-sky] .hero::before{left:clamp(16px,11%,170px);right:auto;top:clamp(34px,7vw,70px);width:clamp(54px,8vw,96px);height:clamp(54px,8vw,96px);
+  background:radial-gradient(circle at 36% 34%,#fbfdff,#cfe3ff 62%,#9db8e6);
+  box-shadow:0 0 0 10px rgba(255,255,255,.07),0 0 0 22px rgba(255,255,255,.045),0 0 90px 24px rgba(150,190,255,.3)}
+html[data-sky="day"] .hero::before{background:radial-gradient(circle at 35% 35%,#fffbe0,#ffd75e 62%,#f5b82e);box-shadow:0 0 0 10px rgba(255,255,255,.3),0 0 0 22px rgba(255,255,255,.18),0 0 80px 26px rgba(255,214,102,.55)}
+html[data-sky="night"] #intro .imoon{background:radial-gradient(circle at 36% 34%,#fbfdff,#cfe3ff 62%,#9db8e6);box-shadow:0 0 0 12px rgba(255,255,255,.07),0 0 0 26px rgba(255,255,255,.045),0 0 100px 26px rgba(150,190,255,.3)}
+html[data-sky] #intro .ibub{background:var(--g-bg);color:var(--fg);border:1px solid var(--g-line);box-shadow:var(--g-shadow);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+
+/* 버튼과 선택 알약 */
+html[data-sky] .btn{border-radius:99px;padding:13px 28px;font-weight:700;letter-spacing:.02em;transition:transform .2s,box-shadow .2s}
+html[data-sky] .btn.dark{background:linear-gradient(180deg,#ffffff,#cfe4f7);color:#0b1d3a;box-shadow:0 10px 28px rgba(120,180,255,.35),inset 0 1px 0 #fff}
+html[data-sky="day"] .btn.dark{background:linear-gradient(180deg,#3b8cf0,#1f6fd6);color:#fff;box-shadow:0 10px 24px rgba(31,111,214,.35),inset 0 1px 0 rgba(255,255,255,.45)}
+html[data-sky] .btn.ghost{background:var(--g-bg);color:var(--fg);border:1px solid var(--g-line);box-shadow:var(--g-shadow);-webkit-backdrop-filter:var(--g-blur);backdrop-filter:var(--g-blur)}
+html[data-sky] .btn:hover{transform:translateY(-3px)}
+html[data-sky] :is(.chip,.seeall,.themebtn,.menubtn,.tbar button,.tod button){background:var(--g-bg);border:1px solid var(--g-line);color:var(--fg);border-radius:99px;box-shadow:inset 0 1px 0 rgba(255,255,255,.35);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+html[data-sky] :is(.seeall,.themebtn,.menubtn){color:var(--amber)}
+html[data-sky] :is(.chip,.tbar button,.tod button)[aria-pressed="true"]{background:var(--amber);color:var(--amber-ink);border-color:transparent;box-shadow:0 0 18px rgba(150,210,255,.45)}
+html[data-sky] .opt{background:var(--g-bg);border:1px solid var(--g-line);color:var(--fg);border-radius:18px;box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+html[data-sky] .opt:hover{background:var(--g-bg);border-color:var(--amber);transform:translateY(-3px)}
+
+/* 구역 제목: 가운데 정렬 + 양옆 얇은 선 */
+html[data-sky] section{padding-block:72px}
+html[data-sky] .eyebrow{background:var(--g-bg);border:1px solid var(--g-line);color:var(--amber);border-radius:99px;padding:5px 16px;letter-spacing:.2em;font-weight:500;font-size:.74rem;box-shadow:none;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+html[data-sky] section .wrap>.eyebrow{display:table;margin:0 auto 12px}
+html[data-sky] section .wrap>h2{text-align:center;letter-spacing:.04em;font-weight:700;font-size:clamp(1.5rem,4vw,2.3rem)}
+html[data-sky] section .wrap>h2::before,html[data-sky] section .wrap>h2::after{content:"";display:inline-block;width:clamp(22px,7vw,64px);height:2px;margin:0 clamp(10px,2vw,18px);vertical-align:middle;border-radius:2px;opacity:.75;background:linear-gradient(90deg,transparent,var(--amber))}
+html[data-sky] section .wrap>h2::after{background:linear-gradient(90deg,var(--amber),transparent)}
+html[data-sky] section .wrap>.lead{margin-inline:auto;text-align:center}
+html[data-sky] .chips,html[data-sky] .tod,html[data-sky] .tbar{justify-content:center}
+html[data-sky] .quiz{background:transparent;color:var(--fg)}
+html[data-sky] .gloss,html[data-sky] #videos.gloss{background:transparent}
+
+/* 세부 종류별 카드 줄: 가운데로 모으고, 카드 안 글은 왼쪽 정렬 */
+html[data-sky] .subgroup .grid,html[data-sky] .result-grid{grid-template-columns:repeat(auto-fit,minmax(240px,320px));justify-content:center}
+html[data-sky] .card{text-align:left}
+html[data-sky] :is(.subgroup,.rsub)>:is(h3,.sdesc,.stip,.why){text-align:center;margin-inline:auto;justify-content:center}
+html[data-sky] .rsub{text-align:center}
+html[data-sky] .seeall{margin-inline:auto}
+
+html[data-sky="day"] .hero h1 .hl{background:linear-gradient(transparent 64%,rgba(31,111,214,.22) 64%)}
+
+html[data-sky] .qbox :is(.qq,.gline){text-align:center}
+
+@media(max-width:720px){html[data-sky] .hero{padding-top:140px}}
+
+/* 숫자 줄 */
+.stats .wrap{display:flex;justify-content:center;gap:clamp(28px,9vw,120px);flex-wrap:wrap;padding-block:6px 36px;text-align:center}
+.stat b{display:block;font-size:clamp(2.2rem,6vw,3.6rem);font-weight:700;letter-spacing:.02em;line-height:1.1;color:var(--fg)}
+.stat span{font-size:.82rem;letter-spacing:.14em;color:var(--muted)}
+
+/* 특징 카드 4개: 가운데 둘이 살짝 떠 있다 */
+html[data-sky] .strip{background:transparent;border:0}
+html[data-sky] .strip ul{gap:18px;padding:34px 0 18px;align-items:start}
+html[data-sky] .strip li{padding:20px 18px;flex-direction:column;align-items:center;text-align:center;gap:10px}
+html[data-sky] .strip i{background:var(--g-bg);border:1px solid var(--g-line);color:var(--amber);width:46px;height:46px;font-size:1.15rem;box-shadow:var(--g-shadow)}
+@media(min-width:900px){html[data-sky] .strip li:nth-child(2),html[data-sky] .strip li:nth-child(3){transform:translateY(-16px)}}
+
+/* 이용 방법 3단계 */
+.steplist{list-style:none;margin:28px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.steplist li{padding:26px 22px;text-align:center;display:grid;gap:8px;justify-items:center;align-content:start}
+.steplist li b{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-size:1.1rem;background:var(--amber);color:var(--amber-ink);box-shadow:0 0 22px rgba(150,210,255,.45)}
+.steplist h3{margin:4px 0 0;font-size:1.1rem}
+.steplist p{margin:0;color:var(--muted);font-size:.92rem}
+
+/* 아래쪽: 도시 실루엣 */
+html[data-sky] footer{position:relative;background:transparent;border-top:0;text-align:center;padding:60px 0 200px}
+html[data-sky="day"] footer{background:transparent;color:var(--fg)}
+html[data-sky] footer .wrap{position:relative;z-index:1}
+html[data-sky] footer p{margin-inline:auto;color:var(--muted)}
+html[data-sky] footer .logo{font-size:1.6rem;display:inline-block}
+html[data-sky] .credits{text-align:left;max-width:900px;margin-inline:auto;color:var(--muted)}
+.skyline{position:absolute;left:0;right:0;bottom:0;height:170px;pointer-events:none}
+.skyline svg{width:100%;height:100%;display:block}
+.skyline .bd{fill:#030816}
+.skyline .wd rect{fill:#ffe9a8;opacity:.85}
+html[data-sky="day"] .skyline .bd{fill:#4d77a8}
+html[data-sky="day"] .skyline .wd rect{fill:#fff;opacity:.5}
+@media(max-width:720px){html[data-sky] footer{padding-bottom:150px}.skyline{height:130px}}
+</style>
+
 </head>
 <body>
 <canvas id="sky" aria-hidden="true"></canvas>
+<div class="liquid" aria-hidden="true"><i></i><i></i><i></i></div>
 <div id="intro" role="dialog" aria-label="시작 화면"><canvas id="introSky" aria-hidden="true"></canvas><div class="imoon"></div><i class="shoot"></i><div class="stage"><div class="ibub">어서 와요! 오늘의 술을 점쳐 드릴게요.</div><h1>술술</h1><p class="isub">오늘의 술 타로</p><p class="ihint" id="ihint">카드 한 장을 눌러 오늘의 술을 뽑아요</p><div class="ifan" id="ifan"></div><div class="ires" id="ires" aria-live="polite"></div><button type="button" id="enter" class="btn dark" hidden>타로 보러 가기</button><button type="button" id="skip" class="iskip">건너뛰기</button></div></div>
 <div class="notice">만 19세 이상을 위한 정보입니다 · 과음은 건강을 해칩니다 · 이 사이트는 술을 판매하지 않고 고르는 법만 안내합니다</div>
 
@@ -530,7 +672,7 @@ html[data-sky="day"] #intro .ires .snk{color:#2c4068}
   <div class="wrap bar">
     <a class="logo" href="#top">술<b>술</b></a>
     <nav class="links" id="mainNav" aria-label="메뉴">
-      <a href="#quiz">내 술 찾기</a><a href="#tarot">술 타로</a><a href="#night">밤·낮 추천</a><a href="#cocktail">칵테일</a><a href="#kinds">술 종류</a><a href="#shop">추천</a><a href="#words">용어 풀이</a><a href="#videos">영상</a><a href="#recipes">마시는 법</a><a href="about.html">소개</a>
+      <a href="#quiz">내 술 찾기</a><a href="#tarot">술 타로</a><a href="#night">밤·낮 추천</a><a href="#cocktail">칵테일</a><a href="#kinds">술 종류</a><a href="#shop">추천</a><a href="#words">용어 풀이</a><a href="#videos">영상</a><a href="#recipes">마시는 법</a>
     </nav>
     <span class="sp"></span>
     <button class="themebtn" id="themeBtn" type="button" aria-label="화면 모드 바꾸기">자동</button>
@@ -542,7 +684,7 @@ html[data-sky="day"] #intro .ires .snk{color:#2c4068}
 <div class="hero"><i class="sp s1"></i><i class="sp s2"></i><i class="sp s3"></i><i class="sp s4"></i>
   <div class="wrap">
     <div>
-      <p class="eyebrow" style="color:inherit;opacity:.75">술을 처음 사는 사람을 위한 가게</p>
+      <p class="eyebrow" style="color:inherit;opacity:.75">술을 처음 만나는 사람을 위한 안내</p>
       <h1>술, <span class="hl">몰라도</span><br>괜찮아요.</h1>
       <p>어려운 이름과 용어는 빼고, 어떤 맛인지부터 알려드려요. 질문 5개에 답하면 어울리는 술 스타일과 구체적인 제품 이름을 알려드립니다.</p>
       <div class="cta-row">
@@ -553,12 +695,24 @@ html[data-sky="day"] #intro .ires .snk{color:#2c4068}
   </div>
 </div>
 
+<div class="stats" id="stats"><div class="wrap"><div class="stat"><b data-k="q">5</b><span>개의 질문</span></div><div class="stat"><b data-k="s">28</b><span>가지 술 스타일</span></div><div class="stat"><b data-k="p">52</b><span>개의 제품 이름</span></div></div></div>
+
 <div class="strip"><div class="wrap"><ul>
   <li><i>맛</i><div><strong>맛을 말로 설명해요</strong><small>"달콤", "깔끔"처럼 쉬운 말로</small></div></li>
   <li><i>도</i><div><strong>도수를 한눈에</strong><small>약함 · 보통 · 강함으로 표시</small></div></li>
   <li><i>상</i><div><strong>언제 마시면 좋은지</strong><small>혼술, 모임, 선물, 식사</small></div></li>
   <li><i>안</i><div><strong>팔지 않고 알려드려요</strong><small>구매 강요 없이 고르는 법만</small></div></li>
 </ul></div></div>
+
+<section class="steps" id="how"><div class="wrap">
+  <p class="eyebrow">HOW IT WORKS</p>
+  <h2>이렇게 이용해요</h2>
+  <ol class="steplist">
+    <li><b>1</b><h3>질문 5개에 답해요</h3><p>자리, 맛, 쓴맛, 탄산, 도수만 고르면 돼요.</p><a class="btn ghost" href="#quiz">퀴즈 시작하기</a></li>
+    <li><b>2</b><h3>어울리는 스타일을 알려드려요</h3><p>와인, 맥주 같은 큰 이름 대신 소비뇽 블랑, 밀맥주처럼 세부 종류로 보여줘요.</p></li>
+    <li><b>3</b><h3>실제 제품 이름을 확인해요</h3><p>한국에서 판매되는 제품의 이름, 도수, 용량을 알려드려요. 판매는 하지 않아요.</p></li>
+  </ol>
+</div></section>
 
 <div class="marq" aria-hidden="true"><div class="track"><span>하이볼</span><span>막걸리</span><span>와인</span><span>맥주</span><span>사케</span><span>위스키</span><span>소주</span><span>진토닉</span><span>럼</span><span>데킬라</span><span>리큐르</span><span>코냑</span><span>하이볼</span><span>막걸리</span><span>와인</span><span>맥주</span><span>사케</span><span>위스키</span></div></div>
 <section class="quiz" id="quiz"><div class="wrap">
@@ -635,7 +789,7 @@ html[data-sky="day"] #intro .ires .snk{color:#2c4068}
 </div></section>
 </main>
 
-<footer><div class="wrap">
+<footer><div class="skyline" id="skyline" aria-hidden="true"></div><div class="wrap">
   <a class="logo" href="#top">술술</a>
   <p>이 사이트는 술을 판매하지 않습니다. 만 19세 미만은 이용 대상이 아닙니다.</p>
   <p>임신 중 음주는 태아의 건강을 해칠 수 있고, 지나친 음주는 뇌졸중, 기억력 손상이나 치매를 유발합니다. 운전 전에는 마시지 마세요.</p>
@@ -916,15 +1070,22 @@ document.getElementById('rec').innerHTML=REC.map(r=>`<article class="rec"><h3>${
   function draw(){
     const w=c.width=innerWidth,h=c.height=innerHeight;
     if(document.documentElement.getAttribute('data-sky')==='day'){drawDay(w,h);return}
-    x.fillStyle='#03050d';x.fillRect(0,0,w,h);
-    const bx=t=>w*(.34+.26*t)+Math.sin(t*5.2)*w*.06;
-    for(let i=0;i<26;i++){const t=i/25,px=bx(t)+gauss()*w*.06,py=t*h,r=Math.max(w,h)*(.10+Math.random()*.12);
-      const g=x.createRadialGradient(px,py,0,px,py,r);g.addColorStop(0,'rgba(78,100,160,'+(.10+Math.random()*.08)+')');g.addColorStop(1,'rgba(78,100,160,0)');x.fillStyle=g;x.fillRect(px-r,py-r,r*2,r*2)}
-    const n=Math.floor(w*h/260);
-    for(let i=0;i<n;i++){const t=Math.random(),px=bx(t)+gauss()*w*.11,py=t*h+gauss()*h*.02;
-      x.globalAlpha=.25+Math.random()*.7;x.fillStyle=Math.random()<.12?'#ffe2aa':'#dfe8ff';x.fillRect(px,py,Math.random()<.08?2:1,Math.random()<.08?2:1)}
-    const m=Math.floor(w*h/1400);
-    for(let i=0;i<m;i++){x.globalAlpha=.3+Math.random()*.7;x.fillStyle='#fff';const r=Math.random()<.06?1.6:.8;x.beginPath();x.arc(Math.random()*w,Math.random()*h,r,0,6.283);x.fill()}
+    const g=x.createLinearGradient(0,0,0,h);g.addColorStop(0,'#040a1d');g.addColorStop(.5,'#0a1b52');g.addColorStop(1,'#17408c');
+    x.fillStyle=g;x.fillRect(0,0,w,h);
+    const rnd=seeded(21),nc=Math.max(5,Math.round(w*h/160000));
+    for(let i=0;i<nc;i++){
+      const cx=rnd()*w,cy=h*(.1+rnd()*.8),sz=Math.max(70,Math.min(w,h)*(.12+rnd()*.12));
+      for(let j=0;j<6;j++){
+        const px=cx+(j-2.5)*sz*.4+(rnd()-.5)*sz*.2,py=cy+(rnd()-.5)*sz*.2,r=sz*(.45+rnd()*.3);
+        const cg=x.createRadialGradient(px,py,0,px,py,r);cg.addColorStop(0,'rgba(60,100,180,.16)');cg.addColorStop(1,'rgba(60,100,180,0)');
+        x.fillStyle=cg;x.fillRect(px-r,py-r,r*2,r*2);
+      }
+    }
+    const ns=Math.floor(w*h/2600);
+    for(let i=0;i<ns;i++){
+      x.globalAlpha=.2+rnd()*.7;x.fillStyle=rnd()<.15?'#cfe6ff':'#fff';
+      const r=rnd()<.07?1.5:rnd()<.4?1:.7;x.beginPath();x.arc(rnd()*w,rnd()*h*.92,r,0,6.283);x.fill();
+    }
     x.globalAlpha=1;
   }
   let tm;draw();addEventListener('resize',()=>{clearTimeout(tm);tm=setTimeout(draw,200)});
@@ -1138,6 +1299,33 @@ renderQuiz();
   addEventListener('skymode',label);
   addEventListener('skychange',()=>{label();tod=window.__sky.sky;renderTod()});
   label();
+})();
+
+/* ===== 리퀴드 글래스: 숫자 줄(데이터에서 세어 보여 줌) + 도시 실루엣 ===== */
+(function(){
+  const vals={q:Q.length,s:Object.keys(SUBS).length,p:P.length};
+  const els=[...document.querySelectorAll('#stats b[data-k]')];
+  els.forEach(b=>{b.dataset.n=vals[b.dataset.k];b.textContent=vals[b.dataset.k]});
+  if(matchMedia('(prefers-reduced-motion:reduce)').matches||!('IntersectionObserver' in window))return;
+  const io=new IntersectionObserver(es=>es.forEach(e=>{
+    if(!e.isIntersecting)return;io.unobserve(e.target);
+    const n=+e.target.dataset.n,t0=performance.now();
+    (function f(t){const k=Math.min(1,(t-t0)/1100);e.target.textContent=Math.round(n*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)})(t0);
+  }),{threshold:.6});
+  els.forEach(b=>{b.textContent=0;io.observe(b)});
+})();
+(function(){
+  const host=document.getElementById('skyline');if(!host)return;
+  let n=11;const r=()=>{n=(n*16807)%2147483647;return(n-1)/2147483646};
+  const W=1440,H=170;let x=-10,body='',win='';
+  while(x<W+10){
+    const bw=26+Math.floor(r()*44),bh=40+Math.floor(r()*(H-62)),y=H-bh;
+    body+=`<rect x="${x}" y="${y}" width="${bw}" height="${bh}"/>`;
+    if(r()<.3)body+=`<rect x="${x+bw/2-2}" y="${y-14}" width="4" height="14"/>`;
+    for(let wy=y+8;wy<H-8;wy+=12)for(let wx=x+6;wx<x+bw-8;wx+=10)if(r()<.36)win+=`<rect x="${wx}" y="${wy}" width="4" height="6"/>`;
+    x+=bw+Math.floor(r()*6);
+  }
+  host.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg"><g class="bd">${body}</g><g class="wd">${win}</g></svg>`;
 })();
 </script>
 
